@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lugaw Cafe POS{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        nav { text-align: center; margin-bottom: 20px; }
+        nav a { margin: 0 10px; text-decoration: none; color: #007BFF; }
+        nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'menu' %}">Menu</a>
+        <a href="{% url 'orders' %}">Orders</a>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>

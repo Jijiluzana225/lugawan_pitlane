@@ -1,0 +1,27 @@
+{% extends 'pos/base.html' %}
+
+{% block title %}Product Catalog - Lugaw Cafe{% endblock %}
+
+{% block content %}
+<h1>Product Catalog</h1>
+{% for category in categories %}
+    <h2>{{ category.name }}</h2>
+    <div class="catalog">
+        {% for product in category.product_set.all %}
+            <div class="product">
+                <h3>{{ product.name }}</h3>
+                <p>₱{{ product.price }}</p>
+                {% if product.available %}
+                    <button>Add to Order</button>
+                {% else %}
+                    <p style="color: red;">Out of Stock</p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No products available in this category.</p>
+        {% endfor %}
+    </div>
+{% empty %}
+    <p>No categories available.</p>
+{% endfor %}
+{% endblock %}

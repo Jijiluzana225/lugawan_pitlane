@@ -1,0 +1,63 @@
+{% extends 'pos/base.html' %}
+
+{% block title %}Product Catalog - Lugaw Cafe{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-5 text-primary fw-bold">🍲 Lugawan ☕</h1>
+
+    {% for category in categories %}
+        <div class="category-section mb-4">
+            <h2 class="text-secondary border-bottom pb-2">{{ category.name }}</h2>
+
+            <div class="row g-4">
+                {% for product in category.product_set.all %}
+                    <div class="col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <h3 class="card-title text-dark fw-bold">{{ product.name }}</h3>
+                                <p class="card-text text-success fs-5">₱{{ product.price }}</p>
+
+                                <!-- Running total ordered today -->
+                                {% with total_ordered=product.total_ordered_today %}
+                                    <p style="font-color:Blue">Ordered today: <strong>{{ total_ordered|default:0 }}</strong></p>
+                                {% endwith %}
+
+                                {% if product.available %}
+                                    <form action="{% url 'add_to_order' %}" method="post" class="d-flex flex-column align-items-center">
+                                        {% csrf_token %}
+                                        <div class="input-group mb-2" style="width: 150px;">
+                                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                                            <input type="number" name="quantity" id="qty_{{ product.id }}" value="1" min="1" class="form-control text-center" required>
+                                            <span class="input-group-text">🛒</span>
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-sm w-100">
+                                            Add to Order
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <p class="text-danger fw-bold">🚫 Out of Stock</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No products available in this category.</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted text-center">No categories available.</p>
+    {% endfor %}
+</div>
+
+<script>
+    function disableButton(form) {
+        const button = form.querySelector('button[type="submit"]');
+        button.disabled = true;
+        button.innerText = 'Adding...'; // Optional: Change text while posting
+    }
+</script>
+
+
+{% endblock %}

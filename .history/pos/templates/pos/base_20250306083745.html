@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lugaw Cafe POS{% endblock %}</title>
+    <style>
+        .catalog {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+    
+        .product {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+    
+        .product h3 {
+            margin: 0;
+        }
+    
+        .product p {
+            margin: 5px 0;
+        }
+    
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+    
+</head>
+<body>
+    <nav>
+        <a href="{% url 'menu' %}">Menu</a>
+        <a href="{% url 'orders' %}">Orders</a>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>

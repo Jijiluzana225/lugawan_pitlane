@@ -1,0 +1,17 @@
+{% extends 'pos/base.html' %}
+
+{% block title %}Menu - Lugaw Cafe{% endblock %}
+
+{% block content %}
+<h1>Menu - Lugaw Cafe</h1>
+<div class="menu">
+    {% for product in products %}
+        <div class="product">
+            <h3>{{ product.name }}</h3>
+            <p>Category: {{ product.category.name }}</p>
+            <p>₱{{ product.price }}</p>
+            <button>Add to Order</button>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

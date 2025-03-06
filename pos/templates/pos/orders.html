@@ -1,0 +1,29 @@
+{% extends 'pos/base.html' %}
+
+{% block title %}Orders - Lugaw Cafe{% endblock %}
+
+{% block content %}
+<h1>Order Items</h1>
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+        <th>Date & Time</th>
+    </tr>
+    {% for item in order_items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>₱{{ item.product.price }}</td>
+        <td>₱{{ item.quantity|floatformat:2|add:item.product.price }}</td>
+        <td>{{ item.datetimestamp }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No items ordered yet.</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

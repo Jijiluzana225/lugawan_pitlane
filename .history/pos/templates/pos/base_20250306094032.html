@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lugaw Cafe POS{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #343a40;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .total-orders {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffc107;
+            text-align: center;
+        }
+
+        .orders-table {
+            margin-top: 30px;
+            background: #212529;
+            border-radius: 8px;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: #212529;
+            padding: 10px;
+            margin: 0;
+            text-align: center;
+            color: #ffc107;
+            z-index: 2;
+        }
+        
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .sticky-thead {
+            position: sticky;
+            top: 10px; /* Below the header */
+            background: #495057;
+            z-index: 1;
+        }
+        
+        .scrollable-table table {
+            width: 100%;
+        }
+        
+        .scrollable-table th, .scrollable-table td {
+            text-align: center;
+        }
+        
+        .scrollable-table tr:nth-child(even) {
+            background-color: #343a40;
+        }
+        
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .catalog {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+
+        .product {
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 200px;
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .product:hover {
+            transform: scale(1.05);
+        }
+
+        .product h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #212529;
+        }
+
+        .product p {
+            margin: 5px 0;
+        }
+
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #343a40;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar with total orders and order table -->
+    <div class="sidebar">
+        <h2>Daily Sales</h2>
+        <div class="total-orders">
+            ₱{{ total_sales|default:"0.00" }}
+        </div>
+
+        <div class="orders-table">
+            <h3 class="sticky-header">Today's Orders</h3>
+            
+            <div class="scrollable-table">
+                <table class="table table-dark table-striped">
+                   
+                        <tr>
+                            <th>Qty</th>
+                            <th>Product</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in todays_orders %}
+                            <tr>
+                                <td>{{ order.quantity }}</td>
+                                <td>{{ order.product.name }}</td>
+                                <td>{{ order.datetimestamp|time:"h:i A" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">No orders yet today.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="main-content">
+        <nav>
+            <a href="{% url 'menu' %}">Menu</a>
+        </nav>
+
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>
