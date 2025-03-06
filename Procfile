@@ -1,1 +1,1 @@
-web: gunicorn delivery.wsgi --log-file -
+web: gunicorn lugaw_pos.wsgi --log-file -
