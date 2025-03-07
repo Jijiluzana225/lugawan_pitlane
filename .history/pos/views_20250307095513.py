@@ -79,9 +79,8 @@ def menu(request):
         'categories': categories,
         'total_sales': total_sales
     })
-    
-    from django.shortcuts import render
-from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from django.shortcuts import render
+from django.db.models import Sum
 from .models import OrderItem, Expense, OtherIncome
 from datetime import datetime
 
@@ -100,15 +99,8 @@ def order_history(request):
     expenses = Expense.objects.filter(datetimestamp__date__range=[start_date, end_date])
     other_income = OtherIncome.objects.filter(datetimestamp__date__range=[start_date, end_date])
 
-    # Calculate total price for orders (quantity * product.price)
-    total_orders = orders.annotate(
-        total_price=ExpressionWrapper(
-            F('quantity') * F('product__price'),
-            output_field=DecimalField()
-        )
-    ).aggregate(Sum('total_price'))['total_price__sum'] or 0
-
-    # Calculate totals for expenses and other income
+    # Calculate totals
+    total_orders = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
     total_expenses = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
     total_other_income = other_income.aggregate(Sum('amount'))['amount__sum'] or 0
 

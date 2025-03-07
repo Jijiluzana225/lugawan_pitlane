@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.id %}Edit Expense{% else %}Add Expense{% endif %} - Lugaw Cafe</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <h2 class="text-center {% if form.instance.id %}text-warning{% else %}text-success{% endif %}">
+            {% if form.instance.id %}✏️ Edit Expense{% else %}➕ Add Expense{% endif %}
+        </h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+                <label for="id_description" class="col-sm-4 col-form-label fw-bold">Description:</label>
+                <div class="col-sm-8">
+                    {{ form.description }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="id_amount" class="col-sm-4 col-form-label fw-bold">Amount:</label>
+                <div class="col-sm-8">
+                    {{ form.amount }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="id_category" class="col-sm-4 col-form-label fw-bold">Category:</label>
+                <div class="col-sm-8">
+                    {{ form.category }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="id_datetimestamp" class="col-sm-4 col-form-label fw-bold">Date & Time:</label>
+                <div class="col-sm-8">
+                    {{ form.datetimestamp }}
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'expense_list' %}" class="btn btn-secondary">
+                    ⬅️ Back to Expenses
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    💾 Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap JS (optional) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

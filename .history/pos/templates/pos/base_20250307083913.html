@@ -9,24 +9,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-
-        nav {
-            display: flex;
-            justify-content: center;
-      
-            padding: 10px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-        }
-
         /* General Styles */
         body {
             display: flex;
@@ -103,7 +85,13 @@
             padding: 20px;
         }
 
-        
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #212529;
+            font-weight: bold;
+        }
+
         .header-link {
             font-size: 2.5rem;
             font-family: 'Arial', sans-serif;
@@ -218,10 +206,10 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <nav STYLES=center>
-            <a href="{% url 'order_history' %}" class="btn btn-outline-secondary">📊 SALES SUMMARY</a>
-            <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary ">💸 Expenses</a>
-            <a href="{% url 'other_income_list' %}" class="btn btn-outline-secondary ">💰 OTher Income</a>
+        <nav>
+            <a href="{% url 'order_history' %}" class="btn btn-outline-secondary w-100 mb-4">📝 View Order History</a>
+            <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary w-100 mb-4">📝 Expenses</a>
+            <a href="{% url 'order_history' %}" class="btn btn-outline-secondary w-100 mb-4">📝 View Order History</a>
         </nav>
 
         <a href="{% url 'catalog' %}" class="header-link">🍲 Lugawan 🍲</a>

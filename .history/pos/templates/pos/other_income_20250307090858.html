@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Other Income</title>
+</head>
+<body>
+    <h1>Other Income</h1>
+    <p>Current time: {{ current_time }}</p>
+
+    <a href="{% url 'other_income_add' %}">➕ Add New Income</a>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Source</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for income in other_income %}
+            <tr>
+                <td>{{ income.description }}</td>
+                <td>₱{{ income.amount }}</td>
+                <td>{{ income.source|default:"N/A" }}</td>
+                <td>{{ income.datetimestamp|date:"Y-m-d H:i:s" }}</td>
+                <td>
+                    <a href="{% url 'other_income_edit' income.id %}">✏️ Edit</a> |
+                    <a href="{% url 'other_income_delete' income.id %}">🗑️ Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No income records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

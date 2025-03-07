@@ -79,52 +79,39 @@ def menu(request):
         'categories': categories,
         'total_sales': total_sales
     })
-    
-    from django.shortcuts import render
-from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from django.shortcuts import render
+from django.utils.timezone import localtime, now
+from datetime import date
 from .models import OrderItem, Expense, OtherIncome
-from datetime import datetime
+from django.db.models import Sum, F
 
 def order_history(request):
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
+    selected_date = request.GET.get('date', str(date.today()))
 
-    # Default to today's date if not provided
-    if not start_date:
-        start_date = datetime.today().strftime('%Y-%m-%d')
-    if not end_date:
-        end_date = datetime.today().strftime('%Y-%m-%d')
+    # Orders
+    orders = OrderItem.objects.filter(datetimestamp__date=selected_date).select_related('product')
+    total_orders = orders.annotate(total_price=F('product__price') * F('quantity')).aggregate(total=Sum('total_price'))['total'] or 0
 
-    # Filter orders, expenses, and other income by date range
-    orders = OrderItem.objects.filter(datetimestamp__date__range=[start_date, end_date])
-    expenses = Expense.objects.filter(datetimestamp__date__range=[start_date, end_date])
-    other_income = OtherIncome.objects.filter(datetimestamp__date__range=[start_date, end_date])
+    # Expenses
+    expenses = Expense.objects.filter(datetimestamp__date=selected_date)
+    total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or 0
 
-    # Calculate total price for orders (quantity * product.price)
-    total_orders = orders.annotate(
-        total_price=ExpressionWrapper(
-            F('quantity') * F('product__price'),
-            output_field=DecimalField()
-        )
-    ).aggregate(Sum('total_price'))['total_price__sum'] or 0
+    # Other Income
+    other_income = OtherIncome.objects.filter(datetimestamp__date=selected_date)
+    total_other_income = other_income.aggregate(total=Sum('amount'))['total'] or 0
 
-    # Calculate totals for expenses and other income
-    total_expenses = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
-    total_other_income = other_income.aggregate(Sum('amount'))['amount__sum'] or 0
-
-    # Calculate general total: (orders + other income) - expenses
+    # General Total (Orders + Other Income - Expenses)
     general_total = (total_orders + total_other_income) - total_expenses
 
     context = {
         'orders': orders,
-        'expenses': expenses,
-        'other_income': other_income,
         'total_orders': total_orders,
+        'expenses': expenses,
         'total_expenses': total_expenses,
+        'other_income': other_income,
         'total_other_income': total_other_income,
         'general_total': general_total,
-        'start_date': start_date,
-        'end_date': end_date,
+        'selected_date': selected_date,
     }
 
     return render(request, 'pos/order_history.html', context)

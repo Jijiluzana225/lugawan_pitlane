@@ -13,7 +13,7 @@
         nav {
             display: flex;
             justify-content: center;
-      
+            background-color: #007bff;
             padding: 10px;
         }
 
@@ -25,6 +25,7 @@
         }
 
         nav a:hover {
+            text-decoration: underline;
         }
 
         /* General Styles */
@@ -219,9 +220,9 @@
     <!-- Main Content Area -->
     <div class="main-content">
         <nav STYLES=center>
-            <a href="{% url 'order_history' %}" class="btn btn-outline-secondary">📊 SALES SUMMARY</a>
-            <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary ">💸 Expenses</a>
-            <a href="{% url 'other_income_list' %}" class="btn btn-outline-secondary ">💰 OTher Income</a>
+            <a href="{% url 'order_history' %}" class="btn btn-outline-secondary">📝 SALES SUMMARY</a>
+            <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary ">📝 Expenses</a>
+            <a href="{% url 'other_income_list' %}" class="btn btn-outline-secondary ">📝 OTher Income</a>
         </nav>
 
         <a href="{% url 'catalog' %}" class="header-link">🍲 Lugawan 🍲</a>

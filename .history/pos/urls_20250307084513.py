@@ -14,8 +14,6 @@ urlpatterns = [
     path('expenses/delete/<int:expense_id>/', views.delete_expense, name='delete_expense'),
     
     path('other-income/', views.other_income_list, name='other_income_list'),
-    path('other-income/add/', views.add_other_income, name='add_other_income'),
-    path('other-income/edit/<int:income_id>/', views.edit_other_income, name='edit_other_income'),
-    path('other-income/delete/<int:income_id>/', views.delete_other_income, name='delete_other_income'),
+    
     
 ]

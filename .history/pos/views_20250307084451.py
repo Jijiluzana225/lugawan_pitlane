@@ -79,56 +79,27 @@ def menu(request):
         'categories': categories,
         'total_sales': total_sales
     })
-    
-    from django.shortcuts import render
-from django.db.models import Sum, F, ExpressionWrapper, DecimalField
-from .models import OrderItem, Expense, OtherIncome
-from datetime import datetime
+
+from django.shortcuts import render
+from django.utils.timezone import now
+from .models import OrderItem
 
 def order_history(request):
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
+    # Get date from request (if provided), otherwise default to today
+    selected_date = request.GET.get('date', now().date())
 
-    # Default to today's date if not provided
-    if not start_date:
-        start_date = datetime.today().strftime('%Y-%m-%d')
-    if not end_date:
-        end_date = datetime.today().strftime('%Y-%m-%d')
+    # Filter and order OrderItem by the selected date and newest first
+    orders = OrderItem.objects.filter(datetimestamp__date=selected_date).order_by('-datetimestamp')
 
-    # Filter orders, expenses, and other income by date range
-    orders = OrderItem.objects.filter(datetimestamp__date__range=[start_date, end_date])
-    expenses = Expense.objects.filter(datetimestamp__date__range=[start_date, end_date])
-    other_income = OtherIncome.objects.filter(datetimestamp__date__range=[start_date, end_date])
-
-    # Calculate total price for orders (quantity * product.price)
-    total_orders = orders.annotate(
-        total_price=ExpressionWrapper(
-            F('quantity') * F('product__price'),
-            output_field=DecimalField()
-        )
-    ).aggregate(Sum('total_price'))['total_price__sum'] or 0
-
-    # Calculate totals for expenses and other income
-    total_expenses = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
-    total_other_income = other_income.aggregate(Sum('amount'))['amount__sum'] or 0
-
-    # Calculate general total: (orders + other income) - expenses
-    general_total = (total_orders + total_other_income) - total_expenses
+    # Calculate total sales amount
+    total_amount = sum(order.product.price * order.quantity for order in orders)
 
     context = {
         'orders': orders,
-        'expenses': expenses,
-        'other_income': other_income,
-        'total_orders': total_orders,
-        'total_expenses': total_expenses,
-        'total_other_income': total_other_income,
-        'general_total': general_total,
-        'start_date': start_date,
-        'end_date': end_date,
+        'selected_date': selected_date,
+        'total_amount': total_amount,
     }
-
     return render(request, 'pos/order_history.html', context)
-
 
 
 from django.shortcuts import render
@@ -136,16 +107,16 @@ from .models import Expense, OtherIncome
 from django.utils.timezone import localtime, now
 
 
-# def expense_list(request):
-#     local_now = localtime(now())
-#     expenses = Expense.objects.all().order_by('-datetimestamp')
-#     return render(request, 'pos/expenses.html', {'expenses': expenses, 'current_time': local_now})
+def expense_list(request):
+    local_now = localtime(now())
+    expenses = Expense.objects.all().order_by('-datetimestamp')
+    return render(request, 'pos/expenses.html', {'expenses': expenses, 'current_time': local_now})
 
 
-# def other_income_list(request):
-#     local_now = localtime(now())
-#     other_income = OtherIncome.objects.all().order_by('-datetimestamp')
-#     return render(request, 'pos/other_income.html', {'other_income': other_income, 'current_time': local_now})
+def other_income_list(request):
+    local_now = localtime(now())
+    other_income = OtherIncome.objects.all().order_by('-datetimestamp')
+    return render(request, 'pos/other_income.html', {'other_income': other_income, 'current_time': local_now})
 
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -188,46 +159,3 @@ def delete_expense(request, expense_id):
     if request.method == 'POST':
         expense.delete()
         return redirect('expense_list')
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Expense, OtherIncome
-from .forms import ExpenseForm, OtherIncomeForm
-from django.utils.timezone import localtime, now
-
-
-# Other Income Views
-def other_income_list(request):
-    local_now = localtime(now())
-    other_income = OtherIncome.objects.all().order_by('-datetimestamp')
-    return render(request, 'pos/other_income.html', {'other_income': other_income, 'current_time': local_now})
-
-
-def add_other_income(request):
-    if request.method == 'POST':
-        form = OtherIncomeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('other_income_list')
-    else:
-        form = OtherIncomeForm()
-    return render(request, 'pos/other_income_form.html', {'form': form})
-
-
-def edit_other_income(request, income_id):
-    income = get_object_or_404(OtherIncome, id=income_id)
-    if request.method == 'POST':
-        form = OtherIncomeForm(request.POST, instance=income)
-        if form.is_valid():
-            form.save()
-            return redirect('other_income_list')
-    else:
-        form = OtherIncomeForm(instance=income)
-    return render(request, 'pos/other_income_form.html', {'form': form})
-
-
-def delete_other_income(request, income_id):
-    income = get_object_or_404(OtherIncome, id=income_id)
-    if request.method == 'POST':
-        income.delete()
-        return redirect('other_income_list')

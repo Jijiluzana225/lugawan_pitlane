@@ -6,14 +6,10 @@
 <div class="container mt-4">
     <h1 class="text-center text-primary fw-bold">📜 Order History</h1>
 
-    <!-- Date Range Filter Form -->
-    <form method="get" action="{% url 'order_history' %}" class="text-center mb-4 d-flex justify-content-center align-items-center">
-        <label for="start_date" class="fw-bold me-2">📅 From:</label>
-        <input type="date" name="start_date" id="start_date" value="{{ start_date }}" class="form-control d-inline-block w-auto me-3">
-        
-        <label for="end_date" class="fw-bold me-2">📅 To:</label>
-        <input type="date" name="end_date" id="end_date" value="{{ end_date }}" class="form-control d-inline-block w-auto me-3">
-        
+    <!-- Date Filter Form -->
+    <form method="get" action="{% url 'order_history' %}" class="text-center mb-4">
+        <label for="date" class="fw-bold me-2">Filter by Date:</label>
+        <input type="date" name="date" id="date" value="{{ selected_date }}" class="form-control d-inline-block w-auto">
         <button type="submit" class="btn btn-primary btn-sm">🔍 Filter</button>
     </form>
 
@@ -39,7 +35,7 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center text-muted">No orders found within this date range.</td>
+                        <td colspan="4" class="text-center text-muted">No orders found for this date.</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -70,7 +66,7 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="3" class="text-center text-muted">No expenses found within this date range.</td>
+                        <td colspan="3" class="text-center text-muted">No expenses found for this date.</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -101,7 +97,7 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="3" class="text-center text-muted">No other income found within this date range.</td>
+                        <td colspan="3" class="text-center text-muted">No other income found for this date.</td>
                     </tr>
                 {% endfor %}
             </tbody>
